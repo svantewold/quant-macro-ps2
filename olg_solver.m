@@ -1,6 +1,4 @@
-function [residual, goods_market_residual, step, a, c] = olg_solver(parameters, Kguess, aguess)
-    LAMBDAHH = 0.01;
-
+function [residual, goods_market_residual, step, a, tau_w] = olg_solver(parameters, Kguess, aguess, LAMBDAHH)
     alpha = parameters.alpha;
     delta = parameters.delta;
     gZ = parameters.gZ;
@@ -32,14 +30,14 @@ function [residual, goods_market_residual, step, a, c] = olg_solver(parameters, 
     w = (1-alpha) * Kguess.^alpha;
     
     % Return on savings, net of capital tax
-    R = (1 + r)*(1-tau_k);
+    R = (1 + r*(1-tau_k));
    
     % Aggregate output 
     Y = Kguess^alpha;
 
     % Pension transfer and tax rate from public sector budget
-    b   = rho * w * ell;
-    tau_w = (b*sum(N(JRet:end)) + g*Y - tau_k*Kguess)/w*L;
+    b = rho * w * ell;
+    tau_w = (b*sum(N(JRet:end)))/(w*L)+(g*Y - tau_k*r*Kguess)/w;
 
     % Set one overall vector with disposable income
     y           = NaN(1,J);
@@ -75,7 +73,7 @@ function [residual, goods_market_residual, step, a, c] = olg_solver(parameters, 
     C = sum(c.*N) ./ L;                                             % Aggregate consumption
     Y = K^alpha;                                                    % Aggregate output
     I = ((1+n)*(1+gZ) - (1-delta))*K;                               % Gross capital investment
-    G = g*Y + b*sum(N(JRet:end));                                   % Aggregate public spending
+    G = g*Y;                                                        % Aggregate public spending
 
     % Goods market clearing
     goods_market_residual = abs(Y - C - I - G);
