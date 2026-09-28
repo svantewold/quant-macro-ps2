@@ -30,21 +30,21 @@ parameters.JRet     = 46;                                                       
 parameters.tau_k = 0.15;
 
 % Set technical parameters
-MAXITER   = 100;                                                           % Max number of root-finding iterations
+MAXITERATIONS   = 100;                                                           % Max number of root-finding iterations
 TOLERANCE = 1e-6;                                                          % Root-finding tolerance level
 LAMBDA    = 0.5;                                                           % FP iteration dampening: equilibrium
 
 % Output matrices for optimal choices
 astart   = 0;                                                              % Starting assets at age 0
-a        = NaN(1,J);                                                       % Asset choice
-c        = NaN(1,J);                                                       % Consumption choice
+a        = NaN(1,parameters.J);                                                       % Asset choice
+c        = NaN(1,parameters.J);                                                       % Consumption choice
 
 % ======================================================================= %
 %  SOLVE MODEL                                                            %
 % ======================================================================= %
 
 % Print iteration header
-fprintf('Solving the model with replacement rate = %3.2g\n',rho)
+fprintf('Solving the model with replacement rate = %3.2g\n',parameters.rho)
 fprintf('%9s %8s %14s\n','Iteration', 'K', 'Norm of f(K)');
 
 % Initial guess for capital intensity
@@ -52,7 +52,7 @@ fprintf('%9s %8s %14s\n','Iteration', 'K', 'Norm of f(K)');
 Kguess = 5;
 
 % Run fixed-point iteration
-for iter = 1:maxiter
+for iter = 1:MAXITERATIONS
     [residual, goods_market_residual] = olg_solver(parameters, Kguess);
    
     % Evaluate convergence
