@@ -29,14 +29,6 @@ parameters.J        = 60;                                                       
 parameters.JRet     = 46;                                                             % Retirement age
 parameters.tau_k = 0.15;
 
-% Impose stationary population with total size equal to 1
-N        = (1+n).^(J:-1:1);                                                % Stationary population
-N        = N / sum(N);                                                     % Normalize to 1
-
-% Labour force = total households younger than 46 * ell
-L        = ell * sum(N(1:JRet-1));                                         % Total labour force
-emprate  = L/sum(N);                                                       % Total labour force as share of population
-
 % Set technical parameters
 MAXITER   = 100;                                                           % Max number of root-finding iterations
 TOLERANCE = 1e-6;                                                          % Root-finding tolerance level
