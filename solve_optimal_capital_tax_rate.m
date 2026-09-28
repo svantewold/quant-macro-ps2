@@ -68,13 +68,14 @@ for i = 1:1000
     goods_market_residuals(i) = goods_market_residual;
 end
 
+% Confirm convergence and goods market clearing
 if max(residuals) < TOLERANCE && max(goods_market_residuals) < TOLERANCE
     disp("Solutions found, and goods market clearing confirmed!");
 elseif max(residuals) < TOLERANCE
     disp("Possible solutions found, but goods market clearing could not be confirmed.");
 end
 
-% Plot life-cycle profiles
+% Plot labor tax rate against capital tax rate
 figure
 hold on
     plot(tau_k_grid, tau_w_solutions, 'linewidth', 1.5)
