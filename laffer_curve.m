@@ -89,15 +89,5 @@ end
  
 fprintf('The government revenue maximizing capital tax rate is: %4.2f\n', tau_k_grid(id));
 
-% Plot Laffer curve
-figure
-hold on
-    plot(tau_k_grid, govt_cap_tax_revenue, 'linewidth', 1.5)
-    title('The Laffer Curve')
-    xlabel('Capital income tax rate, $\tau^k$', 'interpreter', 'latex')
-    ylabel('Government capital tax revenue, $\tau^k r \tilde{K}$', 'interpreter', 'latex')
-    grid on
-hold off
-
-results = table(tau_k_grid', govt_cap_tax_revenue', VariableNames=["tau_k_grid" "govt_cap_tax_revenue"]);
+results = table(tau_k_grid', govt_cap_tax_revenue', VariableNames=["cap_tax_rate" "govt_cap_tax_revenue"]);
 writetable(results, "data/processed/laffer_curve.csv");
