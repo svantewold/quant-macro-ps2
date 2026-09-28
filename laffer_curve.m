@@ -28,31 +28,37 @@ parameters.J     = 60;                                          % Maximum age
 parameters.JRet  = 46;                                          % Retirement age
 parameters.g     = 0.2;                                         % Public spending share of output
 
-% Set technical parameters
+% Technical parameters
 MAXITERATIONS = 300;
 TOLERANCE     = 1e-6;
 LAMBDA        = 0.5;
 LAMBDAHH      = 0.01;
 
-tau_k_grid = linspace(0,1,1000); % Capital tax rates grid
+% Capital tax rates grid
+tau_k_grid = linspace(0,1,1000);
 
 % Initial guess for capital intensity
 Kguess = 5;
+
+% Output matrices (residuals and gov't capital tax revenue)
 residuals = NaN(1,1000);
-govt_cap_tax_revenue = NaN(1,1000);
 goods_market_residuals = NaN(1,1000);
+govt_cap_tax_revenue = NaN(1,1000);
 
 for i = 1:1000
+    % Set capital tax rate along grid
     parameters.tau_k = tau_k_grid(i);
 
     for iter = 1:MAXITERATIONS
+        % Asset guesses for shooting algorithm household optimization
         if iter == 1
             aguess = 1;
         else
             aguess = a(end);
         end
-
-        [residual, goods_market_residual, step, a, tau_w, r] = olg_solver(parameters, Kguess, aguess, LAMBDAHH);
+        
+        % Run solver function
+        [residual, goods_market_residual, step, a, ~, r] = olg_solver(parameters, Kguess, aguess, LAMBDAHH);
     
         % Evaluate convergence
         if residual < TOLERANCE
@@ -61,12 +67,14 @@ for i = 1:1000
             Kguess = Kguess + LAMBDA*step;
         end
     end
-
+    
+    % Extract residuals and gov't cap tax revenue for every iteration
     residuals(i) = residual;
     goods_market_residuals(i) = goods_market_residual;
     govt_cap_tax_revenue(i) = r*parameters.tau_k*Kguess;
 end
 
+% Confirm convergence and goods market clearing
 if max(residuals) < TOLERANCE && max(goods_market_residuals) < TOLERANCE
     disp("Solutions found and goods market clearing confirmed.");
 elseif max(residuals) < TOLERANCE
@@ -75,6 +83,8 @@ else
     disp("Solutions not found");
 end
 
+% Extract maximum gov't capital tax revenue and index
+% which will be used to find the corresponding capital tax rate
 [max, id] = max(govt_cap_tax_revenue);
  
 fprintf('The government revenue maximizing capital tax rate is: %4.2f\n', tau_k_grid(id));
