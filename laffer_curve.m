@@ -98,3 +98,6 @@ hold on
     ylabel('Government capital tax revenue, $\tau^k r \tilde{K}$', 'interpreter', 'latex')
     grid on
 hold off
+
+results = table(tau_k_grid', govt_cap_tax_revenue', VariableNames=["tau_k_grid" "govt_cap_tax_revenue"]);
+writetable(results, "data/processed/laffer_curve.csv");
