@@ -35,11 +35,6 @@ MAXITERATIONS = 200;
 TOLERANCE = 1e-6;
 LAMBDA    = 0.5;
 
-% Output matrices for optimal choices
-astart   = 0;                                                              % Starting assets at age 0
-a        = NaN(1,parameters.J);                                                       % Asset choice
-c        = NaN(1,parameters.J);                                                       % Consumption choice
-
 % ======================================================================= %
 %  SOLVE MODEL                                                            %
 % ======================================================================= %
