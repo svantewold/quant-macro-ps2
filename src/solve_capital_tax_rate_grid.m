@@ -76,7 +76,7 @@ for i = 1:1000
     
     welfare = NaN(1,60);
     for j = 1:parameters.J
-        welfare(j) = beta^(j-1)*(((1+parameters.gZ)^(j-1)*c(j))^(1-parameters.sigma)-1)*1/(1-parameters.sigma);
+        welfare(j) = parameters.beta^(j-1)*((((1+parameters.gZ)^(j-1))*c(j))^(1-parameters.sigma)-1)/(1-parameters.sigma);
     end
 
     welfare_sum(i) = sum(welfare);
