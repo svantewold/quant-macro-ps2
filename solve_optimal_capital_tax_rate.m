@@ -34,52 +34,44 @@ MAXITERATIONS = 200;
 TOLERANCE = 1e-6;
 LAMBDA    = 0.5;
 
-%  SOLVE MODEL
+% SOLVE MODEL
 
-% Print iteration header
-fprintf('Solving the model with replacement rate = %3.2g\n',parameters.rho)
-fprintf('%9s %8s %14s\n','Iteration', 'K', 'Norm of f(K)');
+tau_k_grid = linspace(0,1,1000); % Capital tax rates grid
 
 % Initial guess for capital intensity
-% K/Y=3 and alpha=0.3 -> Ktilde approximately 5
 Kguess = 5;
+residuals = NaN(1,1000);
 
-% Run fixed-point iteration
-for iter = 1:MAXITERATIONS
-    if iter == 1
-        aguess = 1;
-    else
-        aguess = a(end);
+for i = 2:1000
+    parameters.tau_k = tau_k_grid(i);
+
+    for iter = 1:MAXITERATIONS
+        if iter == 1
+            aguess = 1;
+        else
+            aguess = a(end);
+        end
+    
+        [residual, goods_market_residual, step, a, c] = olg_solver(parameters, Kguess, aguess);
+    
+        % Evaluate convergence
+        if residual < TOLERANCE
+            break
+        else
+            Kguess = Kguess + LAMBDA*step;
+        end
     end
 
-    [residual, goods_market_residual, step, a, c] = olg_solver(parameters, Kguess, aguess);
-    fprintf('%9f %8f %14f\n', iter, Kguess, residual);
-
-    % Evaluate convergence
-    if residual < TOLERANCE
-        break
-    else
-        Kguess  = Kguess  + LAMBDA*step;
-    end
+    residuals(i) = residual;
+    cap_intensity(i) = Kguess;
 end
 
-% Finally, print an exit message to give us an idea of what is going on
-if residual < TOLERANCE && goods_market_residual < TOLERANCE 
-    fprintf('Model solved: norm of f(K) is smaller than the tolerance level and the goods market clears.\n\n');
-elseif residual < TOLERANCE
-    fprintf('Possible solution: norm of f(K) smaller than the tolerance level but the goods market does not clear.\n\n');
+if max(abs(residuals)) < TOLERANCE
+    disp("Solutions found!");
 else
-    fprintf('No solution found: iteration limit reached.\n\n');
+    disp("Solutions not found");
 end
 
-% Plot life-cycle profiles
-figure
-hold on
-    plot(19+(1:parameters.J), a, 'linewidth', 1.5)
-    plot(19+(1:parameters.J), c, 'linewidth', 1.5)
-    ylim([0 2.5])
-    legend('Assets','Consumption','location','northwest')
-    title('Shooting method equilibrium')
-    xlabel('Age')
-    grid on
-hold off
+[max, id] = max(cap_intensity);
+fprintf("%20s %26s\n", "Max. capital intensity", "Optimal capital tax rate");
+fprintf("%22.3f %26.3f\n", max, tau_k_grid(id));
