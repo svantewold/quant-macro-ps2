@@ -17,16 +17,17 @@
 % -------------------------------------------------------------------------
 
 % Set parameters
-alpha    = 0.30;                                                           % Capital share
-delta    = 0.05;                                                           % Depreciation rate
-gZ       = 0.01;                                                           % TFP growth rate
-n        = 0.01;                                                           % Population growth rate
-rho      = 0.4;                                                            % Pension replacement rate
-beta     = 1.011;                                                           % Discount factor
-sigma    = 2;                                                              % CRRA
-ell      = 0.3;                                                            % Labour supply
-J        = 60;                                                             % Maximum age
-JRet     = 46;                                                             % Retirement age
+parameters.alpha    = 0.30;                                                           % Capital share
+parameters.delta    = 0.05;                                                           % Depreciation rate
+parameters.gZ       = 0.01;                                                           % TFP growth rate
+parameters.n        = 0.01;                                                           % Population growth rate
+parameters.rho      = 0.4;                                                            % Pension replacement rate
+parameters.beta     = 1.011;                                                           % Discount factor
+parameters.sigma    = 2;                                                              % CRRA
+parameters.ell      = 0.3;                                                            % Labour supply
+parameters.J        = 60;                                                             % Maximum age
+parameters.JRet     = 46;                                                             % Retirement age
+parameters.tau_k = 0.15;
 
 % Impose stationary population with total size equal to 1
 N        = (1+n).^(J:-1:1);                                                % Stationary population
@@ -60,13 +61,13 @@ Kguess = 5;
 
 % Run fixed-point iteration
 for iter = 1:maxiter
-    residual = olg_solver(parameters, Kguess, );
+    [residual, goods_market_residual] = olg_solver(parameters, Kguess);
    
     % Evaluate convergence
-    if Kcond < tol
+    if residual < TOLERANCE
         break
     else
-        Kguess  = Kguess  + lambda*(K  - Kguess);
+        Kguess  = Kguess  + LAMBDA*(K - Kguess);
     end
 end
 
