@@ -27,7 +27,6 @@ parameters.sigma    = 2;                                           % CRRA
 parameters.ell      = 0.3;                                         % Labour supply
 parameters.J        = 60;                                          % Maximum age
 parameters.JRet     = 46;                                          % Retirement age
-parameters.tau_k = 0.1;
 parameters.g = 0.2;
 
 % Set technical parameters
@@ -35,14 +34,7 @@ MAXITERATIONS = 200;
 TOLERANCE = 1e-6;
 LAMBDA    = 0.5;
 
-% Output matrices for optimal choices
-astart   = 0;                                                              % Starting assets at age 0
-a        = NaN(1,parameters.J);                                                       % Asset choice
-c        = NaN(1,parameters.J);                                                       % Consumption choice
-
-% ======================================================================= %
-%  SOLVE MODEL                                                            %
-% ======================================================================= %
+%  SOLVE MODEL
 
 % Print iteration header
 fprintf('Solving the model with replacement rate = %3.2g\n',parameters.rho)
@@ -71,8 +63,6 @@ for iter = 1:MAXITERATIONS
     end
 end
 
-
-
 % Finally, print an exit message to give us an idea of what is going on
 if residual < TOLERANCE && goods_market_residual < TOLERANCE 
     fprintf('Model solved: norm of f(K) is smaller than the tolerance level and the goods market clears.\n\n');
@@ -81,8 +71,6 @@ elseif residual < TOLERANCE
 else
     fprintf('No solution found: iteration limit reached.\n\n');
 end
-
-
 
 % Plot life-cycle profiles
 figure
