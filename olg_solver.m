@@ -1,4 +1,4 @@
-residual = olg_solver(parameters, Kguess, LAMBDAHH = 0.01)
+[residual, goods_market_residual] = olg_solver(parameters, Kguess, LAMBDAHH = 0.01)
 
 % Factor prices from firms' first-order conditions
 r = alpha * Kguess.^(alpha-1) - delta;
