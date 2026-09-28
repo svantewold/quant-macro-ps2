@@ -31,8 +31,9 @@ parameters.g     = 0.2;                                         % Public spendin
 
 % Set technical parameters
 MAXITERATIONS = 300;
-TOLERANCE = 1e-6;
-LAMBDA    = 0.5;
+TOLERANCE     = 1e-6;
+LAMBDA        = 0.5;
+LAMBDAHH      = 0.01;
 
 tau_k_grid = linspace(0,1,1000); % Capital tax rates grid
 
@@ -63,7 +64,7 @@ for i = 1:1000
     end
 
     residuals(i) = residual;
-    labor_tax_rate(i) = tau_w;
+    tau_w_solutions(i) = tau_w;
     goods_market_residuals(i) = goods_market_residual;
 end
 
@@ -73,6 +74,12 @@ elseif max(residuals) < TOLERANCE
     disp("Possible solutions found, but goods market clearing could not be confirmed.");
 end
 
-[max, id] = max(cap_intensity);
-fprintf("%20s %26s\n", "Max. capital intensity", "Optimal capital tax rate");
-fprintf("%22.3f %26.3f\n", max, tau_k_grid(id));
+% Plot life-cycle profiles
+figure
+hold on
+    plot(tau_k_grid, tau_w_solutions, 'linewidth', 1.5)
+    title('Labor tax rate as a function of the capital tax rate')
+    xlabel('Capital income tax rate, $\tau^k$', 'interpreter', 'latex')
+    ylabel('Labor income tax rate, $\tau^w$', 'interpreter', 'latex')
+    grid on
+hold off
