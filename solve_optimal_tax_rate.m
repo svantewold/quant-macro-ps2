@@ -40,7 +40,6 @@ emprate  = L/sum(N);                                                       % Tot
 MAXITER   = 100;                                                           % Max number of root-finding iterations
 TOLERANCE = 1e-6;                                                          % Root-finding tolerance level
 LAMBDA    = 0.5;                                                           % FP iteration dampening: equilibrium
-LAMBDAHH  = 0.01;
 
 % Output matrices for optimal choices
 astart   = 0;                                                              % Starting assets at age 0
@@ -61,76 +60,8 @@ Kguess = 5;
 
 % Run fixed-point iteration
 for iter = 1:maxiter
-    
-    % Factor prices from firms' first-order conditions
-    r = alpha * Kguess.^(alpha-1) - delta;
-    w = (1-alpha) * Kguess.^alpha;
-    
-    % Return on savings
-    R = 1 + r;
-    
-    % Pension transfer and tax rate from public sector budget
-    b   = rho * w * ell;
-    tau = b*sum(N(JRet:end)) / (w*L);
-    
-    % Set one overall vector with disposable income
-    y           = NaN(1,J);
-    y(1:JRet-1) = (1-tau)*w*ell;
-    y(JRet:end) = b;
-    
-    
-    % Initial guess for household problem
-    % Note: use last iteration's solution if possible (faster convergence)
-    if iter == 1
-        aguess = 1;
-    else
-        aguess = a(end);
-    end
-    
-    % Run shooting algorithm
-    acond  = inf;
-    while acond > tol
-        
-        % Final-age assets from guess
-        a(end) = aguess;
-        
-        % Consumption from budget constraint (given that savings = 0)
-        c(end) = R*a(end) + y(end);
-        
-        % Now loop over remaining cohorts
-        for j = J-1:-1:1
-            
-            % Consumption from Euler equation
-            c(j) = (beta*R).^(-1/sigma) .* (1+gZ) .* c(j+1);
-            
-            % Assets from budget constraint
-            a(j) = (c(j) + (1+gZ)*a(j+1) - y(j)) / R;
-            
-        end
-        
-        % Check distance from astart for age-0 assets
-        acond = abs(a(1) - astart);
-        
-        % Update asset guess with fixed point iteration
-        aguess = aguess - lambdahh*(a(1) - astart);
-        
-    end
-    
-    
-    % Market clearing conditions
-    K      = sum(a.*N) ./ L;                                               % Capital market
-    C      = sum(c.*N) ./ L;                                               % Aggregate consumption
-    I      = ((1+n)*(1+gZ) - (1-delta))*K;                                 % Gross capital investment
-    Y      = K^alpha;                                                      % Aggregate output
-    residY = abs(Y - C - I);                                               % Goods market residual (zero by Walras law)
-    
-    
-    % Iteration condition
-    Kcond  = norm(Kguess-K, inf);
-    
-    % Print iteration output so we keep track of what is happening
-    fprintf('%5i\t %9.6g %14.6g\n',iter,Kguess,Kcond);
-    
+    residual = olg_solver(parameters, Kguess, );
+   
     % Evaluate convergence
     if Kcond < tol
         break
