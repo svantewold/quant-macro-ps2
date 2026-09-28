@@ -39,6 +39,8 @@ tau_k_grid = linspace(0,1,1000); % Capital tax rates grid
 % Initial guess for capital intensity
 Kguess = 5;
 residuals = NaN(1,1000);
+labor_tax_rate = NaN(1,1000);
+goods_market_residuals = NaN(1,1000);
 
 for i = 1:1000
     parameters.tau_k = tau_k_grid(i);
@@ -62,6 +64,7 @@ for i = 1:1000
 
     residuals(i) = residual;
     labor_tax_rate(i) = tau_w;
+    goods_market_residuals(i) = goods_market_residual;
 end
 
 if max(residuals) < TOLERANCE && max(goods_market_residuals) < TOLERANCE
