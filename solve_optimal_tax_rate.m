@@ -17,22 +17,23 @@
 % -------------------------------------------------------------------------
 
 % Set parameters
-parameters.alpha    = 0.30;                                                           % Capital share
-parameters.delta    = 0.05;                                                           % Depreciation rate
-parameters.gZ       = 0.01;                                                           % TFP growth rate
-parameters.n        = 0.01;                                                           % Population growth rate
-parameters.rho      = 0.4;                                                            % Pension replacement rate
-parameters.beta     = 1.011;                                                           % Discount factor
-parameters.sigma    = 2;                                                              % CRRA
-parameters.ell      = 0.3;                                                            % Labour supply
-parameters.J        = 60;                                                             % Maximum age
-parameters.JRet     = 46;                                                             % Retirement age
-parameters.tau_k = 0.15;
+parameters.alpha    = 0.3845;                                      % Capital share
+parameters.delta    = 0.0371;                                      % Depreciation rate
+parameters.gZ       = 0.0103;                                      % TFP growth rate
+parameters.n        = 0.0107;                                      % Population growth rate
+parameters.rho      = 0.4;                                         % Pension replacement rate
+parameters.beta     = 1.011;                                       % Discount factor
+parameters.sigma    = 2;                                           % CRRA
+parameters.ell      = 0.3;                                         % Labour supply
+parameters.J        = 60;                                          % Maximum age
+parameters.JRet     = 46;                                          % Retirement age
+parameters.tau_k = 0.1;
+parameters.g = 0.2;
 
 % Set technical parameters
-MAXITERATIONS   = 100;                                                           % Max number of root-finding iterations
-TOLERANCE = 1e-6;                                                          % Root-finding tolerance level
-LAMBDA    = 0.5;                                                           % FP iteration dampening: equilibrium
+MAXITERATIONS = 200;
+TOLERANCE = 1e-6;
+LAMBDA    = 0.5;
 
 % Output matrices for optimal choices
 astart   = 0;                                                              % Starting assets at age 0
@@ -53,22 +54,29 @@ Kguess = 5;
 
 % Run fixed-point iteration
 for iter = 1:MAXITERATIONS
-    [residual, goods_market_residual] = olg_solver(parameters, Kguess);
-   
+    if iter == 1
+        aguess = 1;
+    else
+        aguess = a(end);
+    end
+
+    [residual, goods_market_residual, step, a, c] = olg_solver(parameters, Kguess, aguess);
+    fprintf('%9f %8f %14f\n', iter, Kguess, residual);
+
     % Evaluate convergence
     if residual < TOLERANCE
         break
     else
-        Kguess  = Kguess  + LAMBDA*(K - Kguess);
+        Kguess  = Kguess  + LAMBDA*step;
     end
 end
 
 
 
 % Finally, print an exit message to give us an idea of what is going on
-if Kcond < tol && residY < tol
+if residual < TOLERANCE && goods_market_residual < TOLERANCE 
     fprintf('Model solved: norm of f(K) is smaller than the tolerance level and the goods market clears.\n\n');
-elseif Kcond < tol
+elseif residual < TOLERANCE
     fprintf('Possible solution: norm of f(K) smaller than the tolerance level but the goods market does not clear.\n\n');
 else
     fprintf('No solution found: iteration limit reached.\n\n');
@@ -79,8 +87,8 @@ end
 % Plot life-cycle profiles
 figure
 hold on
-    plot(19+(1:J), a, 'linewidth', 1.5)
-    plot(19+(1:J), c, 'linewidth', 1.5)
+    plot(19+(1:parameters.J), a, 'linewidth', 1.5)
+    plot(19+(1:parameters.J), c, 'linewidth', 1.5)
     ylim([0 2.5])
     legend('Assets','Consumption','location','northwest')
     title('Shooting method equilibrium')
