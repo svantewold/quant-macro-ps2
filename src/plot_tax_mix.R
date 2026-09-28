@@ -13,7 +13,6 @@ max_value <- max(data$govt_cap_tax_revenue, na.rm = TRUE)
 data |>
   ggplot(aes(cap_tax_rate, lab_tax_rate)) +
   geom_line(color = "steelblue", lwd = 1.4) +
-  geom_vline(xintercept = data$cap_tax_rate[max_id], lty = 5) +
   labs(
     x = TeX(r"(Capital income tax rate $(\tau^k)$)"),
     y = TeX(r"(Labor income tax rate $(\tau^w)$)")
