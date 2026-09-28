@@ -17,24 +17,22 @@
 % -------------------------------------------------------------------------
 
 % Set parameters
-parameters.alpha    = 0.3845;                                      % Capital share
-parameters.delta    = 0.0371;                                      % Depreciation rate
-parameters.gZ       = 0.0103;                                      % TFP growth rate
-parameters.n        = 0.0107;                                      % Population growth rate
-parameters.rho      = 0.4;                                         % Pension replacement rate
-parameters.beta     = 1.011;                                       % Discount factor
-parameters.sigma    = 2;                                           % CRRA
-parameters.ell      = 0.3;                                         % Labour supply
-parameters.J        = 60;                                          % Maximum age
-parameters.JRet     = 46;                                          % Retirement age
-parameters.g = 0.2;
+parameters.alpha = 0.3845;                                      % Capital share
+parameters.delta = 0.0371;                                      % Depreciation rate
+parameters.gZ    = 0.0103;                                      % TFP growth rate
+parameters.n     = 0.0107;                                      % Population growth rate
+parameters.rho   = 0.4;                                         % Pension replacement rate
+parameters.beta  = 1.011;                                       % Discount factor
+parameters.sigma = 2;                                           % CRRA
+parameters.ell   = 0.3;                                         % Labour supply
+parameters.J     = 60;                                          % Maximum age
+parameters.JRet  = 46;                                          % Retirement age
+parameters.g     = 0.2;                                         % Public spending share of output
 
 % Set technical parameters
-MAXITERATIONS = 200;
+MAXITERATIONS = 300;
 TOLERANCE = 1e-6;
 LAMBDA    = 0.5;
-
-% SOLVE MODEL
 
 tau_k_grid = linspace(0,1,1000); % Capital tax rates grid
 
@@ -42,7 +40,7 @@ tau_k_grid = linspace(0,1,1000); % Capital tax rates grid
 Kguess = 5;
 residuals = NaN(1,1000);
 
-for i = 2:1000
+for i = 1:1000
     parameters.tau_k = tau_k_grid(i);
 
     for iter = 1:MAXITERATIONS
@@ -51,8 +49,8 @@ for i = 2:1000
         else
             aguess = a(end);
         end
-    
-        [residual, goods_market_residual, step, a, c] = olg_solver(parameters, Kguess, aguess);
+
+        [residual, goods_market_residual, step, a, tau_w] = olg_solver(parameters, Kguess, aguess, LAMBDAHH);
     
         % Evaluate convergence
         if residual < TOLERANCE
@@ -63,13 +61,13 @@ for i = 2:1000
     end
 
     residuals(i) = residual;
-    cap_intensity(i) = Kguess;
+    labor_tax_rate(i) = tau_w;
 end
 
-if max(abs(residuals)) < TOLERANCE
-    disp("Solutions found!");
-else
-    disp("Solutions not found");
+if max(residuals) < TOLERANCE && max(goods_market_residuals) < TOLERANCE
+    disp("Solutions found, and goods market clearing confirmed!");
+elseif max(residuals) < TOLERANCE
+    disp("Possible solutions found, but goods market clearing could not be confirmed.");
 end
 
 [max, id] = max(cap_intensity);
