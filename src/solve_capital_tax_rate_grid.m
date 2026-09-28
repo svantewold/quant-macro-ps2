@@ -46,6 +46,7 @@ goods_market_residuals = NaN(1,1000);
 
 labor_tax_rate = NaN(1,1000);
 govt_cap_tax_revenue = NaN(1,1000);
+welfare_sum = NaN(1,1000);
 
 for i = 1:1000
     parameters.tau_k = tau_k_grid(i);
@@ -57,7 +58,7 @@ for i = 1:1000
             aguess = a(end);
         end
 
-        [residual, goods_market_residual, step, a, tau_w, r] = olg_solver(parameters, Kguess, aguess, LAMBDAHH);
+        [residual, goods_market_residual, step, a, c, tau_w, r] = olg_solver(parameters, Kguess, aguess, LAMBDAHH);
     
         % Evaluate convergence
         if residual < TOLERANCE
@@ -72,6 +73,13 @@ for i = 1:1000
 
     tau_w_solutions(i) = tau_w;
     govt_cap_tax_revenue(i) = r*parameters.tau_k*Kguess;
+    
+    welfare = NaN(1,60);
+    for j = 1:parameters.J
+        welfare(j) = beta^(j-1)*(((1+parameters.gZ)^(j-1)*c(j))^(1-parameters.sigma)-1)*1/(1-parameters.sigma);
+    end
+
+    welfare_sum(i) = sum(welfare);
 end
 
 % Confirm convergence and goods market clearing
