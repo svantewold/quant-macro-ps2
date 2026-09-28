@@ -18,17 +18,17 @@ data |>
     x = data$cap_tax_rate[max_id],
     y = max_value,
     geom = "point",
-    color = "darkorange2",
-    size = 5,
-    shape = 18
+    color = "darkorange4",
+    size = 4,
+    shape = 16
   ) +
   labs(
     x = TeX(r"(Capital tax rate $(\tau^k)$)"),
-    y = TeX(r"(Government capital tax revenue $(r \tau^k \tilde{K})$)")
+    y = TeX(r"(Government capital tax revenue $(\tau^k r \tilde{K})$)")
   ) +
-  coord_cartesian(expand = FALSE) +
-  scale_y_continuous() +
-  scale_x_continuous() +
+  coord_cartesian(expand = FALSE, ylim = c(0, 0.5)) +
+  scale_y_continuous(breaks = seq(0.05,0.5, by = 0.1)) +
+  scale_x_continuous(n.breaks = 10) +
   theme_classic() +
   theme(
     text = element_text(
