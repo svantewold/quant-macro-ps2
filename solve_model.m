@@ -4,12 +4,12 @@
 %   is solved with the shooting method.
 %   
 %   The code assumes a stationary population distribution with 1 percent
-%   population growht per year in which households live with certainty
+%   population growth per year in which households live with certainty
 %   until an age of 79 (model age 60) and retire at age 65 (model age 46).
-%   The population size is normalized to 1. TFP grows by 1 percent per
-%   year; the capital share is 0.3; the capital depreciation rate is 5
-%   percent; the social security replacement rate 40 percent; and
-%   households have a discount factor and CRRA parameter equal to 0.98
+%   The population size is normalized to 1. TFP grows by 1.03 percent per
+%   year; the capital share is 0.3845; the capital depreciation rate is 
+%   3.71 percent; the social security replacement rate 40 percent; and
+%   households have a discount factor and CRRA parameter equal to 1.011 
 %   and 2, respectively.
 %   
 %   Author: Markus Pettersson, Stockholm University.
@@ -66,9 +66,7 @@ for iter = 1:MAXITERATIONS
     end
 end
 
-
-
-% Finally, print an exit message to give us an idea of what is going on
+% Print an exit message to give us an idea of what is going on
 if residual < TOLERANCE && goods_market_residual < TOLERANCE 
     fprintf('Model solved: norm of f(K) is smaller than the tolerance level and the goods market clears.\n\n');
 elseif residual < TOLERANCE
@@ -76,8 +74,6 @@ elseif residual < TOLERANCE
 else
     fprintf('No solution found: iteration limit reached.\n\n');
 end
-
-
 
 % Plot life-cycle profiles
 figure
