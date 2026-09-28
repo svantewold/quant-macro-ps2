@@ -1,4 +1,4 @@
-function [residual, goods_market_residual, step, a, tau_w, r] = olg_solver(parameters, Kguess, aguess, LAMBDAHH)
+function [residual, goods_market_residual, step, a, c, tau_w, r] = olg_solver(parameters, Kguess, aguess, LAMBDAHH)
     alpha = parameters.alpha;
     delta = parameters.delta;
     gZ = parameters.gZ;
