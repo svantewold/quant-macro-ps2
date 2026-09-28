@@ -1,5 +1,25 @@
 [residual, goods_market_residual] = olg_solver(parameters, Kguess, LAMBDAHH = 0.01)
 
+alpha = parameters.alpha;
+delta = parameters.delta;
+gZ = parameters.gZ;
+n = parameters.n;
+rho = parameters.rho;
+beta = parameters.beta;
+sigma = parameters.sigma;
+ell = parameters.ell;
+J = parameters.J;
+JRet = parameters.JRet;
+tau_k = parameters.tau_k;
+
+% Impose stationary population
+N = (1+n).^(J:-1:1);
+N = N / sum(N);
+
+% Total labor force and employment rate as share of population
+L = ell * sum(N(1:JRet-1));
+emprate  = L/sum(N);
+
 % Factor prices from firms' first-order conditions
 r = alpha * Kguess.^(alpha-1) - delta;
 w = (1-alpha) * Kguess.^alpha;
