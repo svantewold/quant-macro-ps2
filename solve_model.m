@@ -39,8 +39,8 @@ LAMBDA    = 0.5;
 %  SOLVE MODEL                                                            %
 % ======================================================================= %
 
-% Print iteration header
-fprintf('Solving the model with replacement rate = %3.2g\n',parameters.rho)
+fprintf('==========================\n');
+fprintf('Solving the model with:\n\nReplacement rate = %3.2g, capital tax rate = %3.2g\n\n',parameters.rho, parameters.tau_k)
 fprintf('%9s %8s %14s\n','Iteration', 'K', 'Norm of f(K)');
 
 % Initial guess for capital intensity
@@ -55,8 +55,8 @@ for iter = 1:MAXITERATIONS
         aguess = a(end);
     end
 
-    [residual, goods_market_residual, step, a, c] = olg_solver(parameters, Kguess, aguess);
-    fprintf('%9f %8f %14f\n', iter, Kguess, residual);
+    [residual, goods_market_residual, step, a] = olg_solver(parameters, Kguess, aguess, LAMBDAHH);
+    fprintf('%9i %8.4f %14.4f\n', iter, Kguess, residual);
 
     % Evaluate convergence
     if residual < TOLERANCE
