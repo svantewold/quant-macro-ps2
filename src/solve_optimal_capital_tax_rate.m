@@ -39,9 +39,13 @@ tau_k_grid = linspace(0,1,1000); % Capital tax rates grid
 
 % Initial guess for capital intensity
 Kguess = 5;
+
+% Output matrices
 residuals = NaN(1,1000);
-labor_tax_rate = NaN(1,1000);
 goods_market_residuals = NaN(1,1000);
+
+labor_tax_rate = NaN(1,1000);
+govt_cap_tax_revenue = NaN(1,1000);
 
 for i = 1:1000
     parameters.tau_k = tau_k_grid(i);
@@ -53,7 +57,7 @@ for i = 1:1000
             aguess = a(end);
         end
 
-        [residual, goods_market_residual, step, a, tau_w] = olg_solver(parameters, Kguess, aguess, LAMBDAHH);
+        [residual, goods_market_residual, step, a, tau_w, r] = olg_solver(parameters, Kguess, aguess, LAMBDAHH);
     
         % Evaluate convergence
         if residual < TOLERANCE
@@ -64,8 +68,10 @@ for i = 1:1000
     end
 
     residuals(i) = residual;
-    tau_w_solutions(i) = tau_w;
     goods_market_residuals(i) = goods_market_residual;
+
+    tau_w_solutions(i) = tau_w;
+    govt_cap_tax_revenue(i) = r*parameters.tau_k*Kguess;
 end
 
 % Confirm convergence and goods market clearing
@@ -75,12 +81,5 @@ elseif max(residuals) < TOLERANCE
     disp("Possible solutions found, but goods market clearing could not be confirmed.");
 end
 
-% Plot labor tax rate against capital tax rate
-figure
-hold on
-    plot(tau_k_grid, tau_w_solutions, 'linewidth', 1.5)
-    title('Labor tax rate as a function of the capital tax rate')
-    xlabel('Capital income tax rate, $\tau^k$', 'interpreter', 'latex')
-    ylabel('Labor income tax rate, $\tau^w$', 'interpreter', 'latex')
-    grid on
-hold off
+results = table(tau_k_grid', tau_w_solutions', govt_cap_tax_revenue', VariableNames = ["cap_tax_rate" "lab_tax_rate" "govt_cap_tax_revenue"]);
+writetable(results, "data/processed/cap_tax_rate_grid.csv");
