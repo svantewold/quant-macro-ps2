@@ -1,5 +1,4 @@
-%   
-%   FULLMODEL_SHOOTING computes the full general equilibrium OLG model with
+%   This script computes the full general equilibrium OLG model with
 %   many generations and a a pension system, in which the household problem
 %   is solved with the shooting method.
 %   
@@ -12,8 +11,7 @@
 %   households have a discount factor and CRRA parameter equal to 0.98
 %   and 2, respectively.
 %   
-%   Author: Markus Pettersson, Stockholm University.
-%   
+%   Based on provided code by: Markus Pettersson, Stockholm University.
 % -------------------------------------------------------------------------
 
 % Set parameters
