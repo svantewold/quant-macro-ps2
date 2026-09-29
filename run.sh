@@ -1,18 +1,14 @@
 echo "Running analysis"
-echo "======================================"
+echo "--------------------------------------"
 
 echo "Solving capital tax rate grid..."
 matlab -batch main
-echo "======================================"
+echo "--------------------------------------"
 
 echo "Generating plots..."
-Rscript src/plot_tax_mix.R
-echo "======================================"
+echo "--------------------------------------"
 
-Rscript src/plot_welfare.R
-echo "======================================"
-
-Rscript src/plot_laffer_curve.R
-echo "======================================"
+Rscript src/generate_plots.R
+echo "--------------------------------------"
 
 echo "Analysis and plot generation finished."
