@@ -89,5 +89,5 @@ elseif max(residuals) < TOLERANCE
     disp("Possible solutions found, but goods market clearing could not be confirmed.");
 end
 
-results = table(tau_k_grid', tau_w_solutions', govt_cap_tax_revenue', VariableNames = ["cap_tax_rate" "lab_tax_rate" "govt_cap_tax_revenue"]);
+results = table(tau_k_grid', tau_w_solutions', govt_cap_tax_revenue', welfare_sum',VariableNames = ["cap_tax_rate" "lab_tax_rate" "govt_cap_tax_revenue" "welfare"]);
 writetable(results, "data/processed/cap_tax_rate_grid.csv");
