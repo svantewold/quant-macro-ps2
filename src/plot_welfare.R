@@ -23,7 +23,7 @@ data |>
     shape = 16
   ) +
   labs(
-    x = TeX(r"(Capital tax rate $(\tau^k)$)"),
+    x = TeX(r"(Capital income tax rate $(\tau^k)$)"),
     y = TeX(r"(Household welfare $(W_t)$)")
   ) +
   coord_cartesian(
@@ -31,7 +31,7 @@ data |>
     ylim = c(-155, -100)
   ) +
   scale_y_continuous() +
-  scale_x_continuous() +
+  scale_x_continuous(n.breaks = 10) +
   theme_classic() +
   theme(
     text = element_text(

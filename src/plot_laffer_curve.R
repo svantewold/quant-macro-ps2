@@ -23,10 +23,10 @@ data |>
     shape = 16
   ) +
   labs(
-    x = TeX(r"(Capital tax rate $(\tau^k)$)"),
-    y = TeX(r"(Government capital tax revenue $(\tau^k r \tilde{K})$)")
+    x = TeX(r"(Capital income tax rate $(\tau^k)$)"),
+    y = TeX(r"(Government tax revenue $(\tau^k r \tilde{K})$)")
   ) +
-  coord_cartesian(expand = FALSE, ylim = c(0, 0.5)) +
+  coord_cartesian(expand = FALSE, ylim = c(0, 0.52)) +
   scale_y_continuous(breaks = seq(0.05,0.5, by = 0.1)) +
   scale_x_continuous(n.breaks = 10) +
   theme_classic() +
