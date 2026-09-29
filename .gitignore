@@ -1,3 +1,4 @@
 *.pdf
 output/*
 src:
+src/solve_model.m
