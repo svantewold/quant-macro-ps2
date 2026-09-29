@@ -90,4 +90,4 @@ elseif max(residuals) < TOLERANCE
 end
 
 results = table(tau_k_grid', tau_w_solutions', govt_cap_tax_revenue', welfare_sum',VariableNames = ["cap_tax_rate" "lab_tax_rate" "govt_cap_tax_revenue" "welfare"]);
-writetable(results, "data/processed/cap_tax_rate_grid.csv");
+writetable(results, "data/cap_tax_rate_grid.csv");

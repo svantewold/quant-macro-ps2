@@ -5,7 +5,7 @@ library(latex2exp)
 font_add("LibertinusSerif", "LibertinusSerif-Regular.ttf")
 showtext_auto()
 
-data <- read.csv("data/processed/cap_tax_rate_grid.csv")
+data <- read.csv("data/cap_tax_rate_grid.csv")
 
 max_id <- which.max(data$govt_cap_tax_revenue)
 max_value <- max(data$govt_cap_tax_revenue, na.rm = TRUE)
