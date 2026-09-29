@@ -7,9 +7,12 @@ showtext_auto()
 
 data <- read.csv("data/cap_tax_rate_grid.csv")
 
+# Obtain maximum gov't tax revenue and index to find
+# corresponding capital income tax rate
 max_id <- which.max(data$govt_cap_tax_revenue)
 max_value <- max(data$govt_cap_tax_revenue, na.rm = TRUE)
 
+# Plot Laffer curve
 data |>
   ggplot(aes(cap_tax_rate, govt_cap_tax_revenue)) +
   geom_line(color = "steelblue", lwd = 1.4) +

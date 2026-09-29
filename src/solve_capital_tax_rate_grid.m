@@ -1,20 +1,4 @@
-%   This script computes the full general equilibrium OLG model with
-%   many generations and a a pension system, in which the household problem
-%   is solved with the shooting method.
-%   
-%   The code assumes a stationary population distribution with 1 percent
-%   population growht per year in which households live with certainty
-%   until an age of 79 (model age 60) and retire at age 65 (model age 46).
-%   The population size is normalized to 1. TFP grows by 1.03 percent per
-%   year; the capital share is 0.3845; the capital depreciation rate is 3.71
-%   percent; the social security replacement rate 40 percent; and
-%   households have a discount factor and CRRA parameter equal to 1.011
-%   and 2, respectively.
-%   
-%   Based on provided code by: Markus Pettersson, Stockholm University.
-% -------------------------------------------------------------------------
-
-% Set parameters
+% Set model parameters
 parameters.alpha = 0.3845;                                      % Capital share
 parameters.delta = 0.0371;                                      % Depreciation rate
 parameters.gZ    = 0.0103;                                      % TFP growth rate
@@ -29,9 +13,9 @@ parameters.g     = 0.2;                                         % Public spendin
 
 % Set technical parameters
 MAXITERATIONS = 300;
-TOLERANCE     = 1e-6;
-LAMBDA        = 0.5;
-LAMBDAHH      = 0.01;
+TOLERANCE     = 1e-6;  % convergence criterium
+LAMBDA        = 0.5;   % fixed point iteration dampening factor
+LAMBDAHH      = 0.01;  % fixed point iteration dampening factor for solving household problem
 
 tau_k_grid = linspace(0,1,1000); % Capital tax rates grid
 
@@ -46,16 +30,18 @@ labor_tax_rate = NaN(1,1000);
 govt_cap_tax_revenue = NaN(1,1000);
 welfare_sum = NaN(1,1000);
 
+% Solving the model over the grid with dampened fixed point iteration
 for i = 1:1000
     parameters.tau_k = tau_k_grid(i);
 
     for iter = 1:MAXITERATIONS
+        % Initial asset guesses used in household optimization
         if iter == 1
             aguess = 1;
         else
             aguess = a(end);
         end
-
+        % Call the solver function
         [residual, goods_market_residual, step, a, c, tau_w, r] = olg_solver(parameters, Kguess, aguess, LAMBDAHH);
     
         % Evaluate convergence
@@ -65,13 +51,15 @@ for i = 1:1000
             Kguess = Kguess + LAMBDA*step;
         end
     end
-
+    % Collect residual and goods market residual
     residuals(i) = residual;
     goods_market_residuals(i) = goods_market_residual;
-
+    
+    % Collect endogenous labor income tax rate and gov't capital tax revenue
     tau_w_solutions(i) = tau_w;
     govt_cap_tax_revenue(i) = r*parameters.tau_k*Kguess;
-    
+   
+    % Calculate household welfare
     welfare = NaN(1,60);
     for j = 1:parameters.J
         welfare(j) = parameters.beta^(j-1)*((((1+parameters.gZ)^(j-1))*c(j))^(1-parameters.sigma)-1)/(1-parameters.sigma);
@@ -87,5 +75,6 @@ elseif max(residuals) < TOLERANCE
     disp("Possible solutions found, but goods market clearing could not be confirmed.");
 end
 
+% Export results for plotting
 results = table(tau_k_grid', tau_w_solutions', govt_cap_tax_revenue', welfare_sum',VariableNames = ["cap_tax_rate" "lab_tax_rate" "govt_cap_tax_revenue" "welfare"]);
 writetable(results, "data/cap_tax_rate_grid.csv");

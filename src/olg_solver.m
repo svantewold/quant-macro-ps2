@@ -1,4 +1,5 @@
 function [residual, goods_market_residual, step, a, c, tau_w, r] = olg_solver(parameters, Kguess, aguess, LAMBDAHH)
+    % Unpack parameters
     alpha = parameters.alpha;
     delta = parameters.delta;
     gZ = parameters.gZ;
@@ -54,7 +55,7 @@ function [residual, goods_market_residual, step, a, c, tau_w, r] = olg_solver(pa
         % Consumption from budget constraint (given that savings = 0)
         c(end) = R*a(end) + y(end);
     
-        % Now loop over remaining cohorts
+        % Loop over remaining cohorts
         for j = J-1:-1:1
             % Consumption from Euler equation
             c(j) = (beta*R).^(-1/sigma) .* (1+gZ) .* c(j+1);

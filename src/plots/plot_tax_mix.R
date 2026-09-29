@@ -7,6 +7,7 @@ showtext_auto()
 
 data <- read.csv("data/cap_tax_rate_grid.csv")
 
+# Plot tax mix
 data |>
   ggplot(aes(cap_tax_rate, lab_tax_rate)) +
   geom_line(color = "steelblue", lwd = 1.4) +

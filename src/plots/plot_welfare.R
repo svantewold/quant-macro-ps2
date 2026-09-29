@@ -7,9 +7,12 @@ showtext_auto()
 
 data <- read.csv("data/cap_tax_rate_grid.csv")
 
+# Obtain maximum household welfare and index to find
+# corresponding capital income tax rate
 max_id <- which.max(data$welfare)
 max_value <- max(data$welfare, na.rm = TRUE)
 
+# Plot welfare as a function of cap tax rate
 data |>
   ggplot(aes(cap_tax_rate, welfare)) +
   geom_line(color = "steelblue", lwd = 1.4) +
