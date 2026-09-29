@@ -11,6 +11,6 @@ The plot module produces three plots:
 - *The household welfare*: total lifetime utility of a given household as a function of the capital income tax.
 - *The Laffer Curve*: government tax revenue as a function of the capital income tax.
 
-The repository can be ran by running `run.sh` from the command line.
+Run the repository by running `run.sh` from the command line.
 
 **All Matlab scripts are based on provided code by: Markus Pettersson, Stockholm University.**
